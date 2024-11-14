@@ -1,3 +1,5 @@
+%brick = ConnectBrick('VIRUS'); run this in command window before press run
+
 global key;
 InitKeyboard();
 
