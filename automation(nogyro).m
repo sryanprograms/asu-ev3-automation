@@ -1,63 +1,62 @@
 global key;
 InitKeyboard();
 
-% Initialize sensors
-brick.SetColorMode(4, 2);  % Set color sensor to Color Code mode
+%  sensors
+brick.SetColorMode(4, 2);  
 
 beginMoving = 1;
-manualMode = false;  % Flag for manual mode
+manualMode = false;  
 pickupDone = false;
 dropoffDone = false;
 
-% Main loop
 while beginMoving
-    % Kill switch (touch sensor)
+    % Kill switch
     if brick.TouchPressed(1)
         brick.StopAllMotors();
         disp('Kill switch pressed.');
         break;
     end
     
-    % Read sensor values
+    % sensor ports
     distance = brick.UltrasonicDist(4);
     color = brick.ColorCode(4);
     press = brick.TouchPressed(1);
 
-    % Autonomous Movement
+    % autonomous
     if ~manualMode
         % Move forward
         brick.MoveMotor('A', 50);
         brick.MoveMotor('D', 50);
         
-        % If red color is detected, stop for 5 seconds (stop sign)
+        % stop sign
         if color == 5
             brick.StopAllMotors();
             pause(5);  % Wait for 5 seconds
-        % Detect blue color for pickup zone
+        % pickup zone
         elseif color == 2 && ~pickupDone
             brick.StopAllMotors();
             manualMode = true;
-        % Detect green color for drop-off zone
+        % drop-off zone
         elseif color == 3 && pickupDone && ~dropoffDone
             brick.StopAllMotors();
             manualMode = true;
-        % Wall-following logic
+        % follow walls 
         elseif distance <= 25 && press == 1
-            % Wall on the left, move right
+            % wall on the left turn right
             pause(0.5);
-            brick.MoveMotorAngleRel('A', -50, 180, 'D', 50, 180);  % Turn right
+            brick.MoveMotorAngleRel('A', -50, 180, 'D', 50, 180);  
             brick.WaitForMotor('A');
             brick.WaitForMotor('D');
         elseif distance > 25 && press == 1
-            % Wall on the right, move left
+            % wall on the right turn left
             pause(0.5);
-            brick.MoveMotorAngleRel('A', 50, 180, 'D', -50, 180);  % Turn left
+            brick.MoveMotorAngleRel('A', 50, 180, 'D', -50, 180); 
             brick.WaitForMotor('A');
             brick.WaitForMotor('D');
         end
     end
 
-    % Manual Control
+    % manual 
     if manualMode
         switch key
             case 'uparrow'
@@ -81,14 +80,14 @@ while beginMoving
                 pause(1);
                 brick.StopMotor('B');
             case 'space'
-                % Switch back to autonomous mode
+                % switch to autonomous
                 manualMode = false;
                 if color == 2
                     pickupDone = true;
                 elseif color == 3
                     dropoffDone = true;
                 end
-            case 'q'  % Quit the program
+            case 'q'  % quit (kill switch for keyboard)
                 brick.StopAllMotors();
                 break;
         end
@@ -101,5 +100,4 @@ while beginMoving
     end
 end
 
-% Cleanup
 CloseKeyboard();
