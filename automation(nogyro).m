@@ -11,6 +11,13 @@ dropoffDone = false;
 
 % Main loop
 while beginMoving
+    % Kill switch (touch sensor)
+    if brick.TouchPressed(1)
+        brick.StopAllMotors();
+        disp('Kill switch pressed.');
+        break;
+    end
+    
     % Read sensor values
     distance = brick.UltrasonicDist(4);
     color = brick.ColorCode(4);
