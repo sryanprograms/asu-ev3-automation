@@ -1,8 +1,8 @@
 global key;
 InitKeyboard();
 
-%  sensors
-brick.SetColorMode(4, 2);  
+%  set color sensor
+brick.SetColorMode(3, 2);
 
 beginMoving = 1;
 manualMode = false;  
@@ -19,8 +19,8 @@ while beginMoving
     
     % sensor ports
     distance = brick.UltrasonicDist(4);
-    color = brick.ColorCode(4);
-    press = brick.TouchPressed(1);
+    color = brick.ColorCode(3);
+    press = brick.TouchPressed(2);
 
     % autonomous
     if ~manualMode
