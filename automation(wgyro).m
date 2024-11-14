@@ -10,7 +10,7 @@ pickupDone = false;
 dropoffDone = false;
 
 TURN_SPEED = 50;
-STRAIGHT_SPEED = 50;
+STRAIGHT_SPEED = -50;
 TURN_ANGLE = 90;
 
 % Function to make a precise turn using the gyro sensor
@@ -32,9 +32,9 @@ end
 while beginMoving
     % Read sensor values
     distance = brick.UltrasonicDist(4);
-    color = brick.ColorCode(4);
-    press = brick.TouchPressed(1);
-    currentAngle = brick.GyroAngle(2);
+    color = brick.ColorCode(3);
+    press = brick.TouchPressed(2);
+    currentAngle = brick.GyroAngle(1);
 
     % Autonomous Movement
     if ~manualMode
