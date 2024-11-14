@@ -24,9 +24,9 @@ while beginMoving
 
     % autonomous
     if ~manualMode
-        % Move forward
-        brick.MoveMotor('A', 50);
-        brick.MoveMotor('D', 50);
+        % forward
+        brick.MoveMotor('A', -50);
+        brick.MoveMotor('D', -50);
         
         % stop sign
         if color == 5
