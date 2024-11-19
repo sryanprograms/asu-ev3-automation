@@ -1,97 +1,94 @@
 % Initialize Gyro Sensor
-brick.GyroReset('1'); % Reset the gyro sensor to zero
+brick.GyroReset('1');
 
-% Main Loop
 while ~taskCompleted
-    % Kill Switch
+    % stop button
     if brick.TouchPressed(1)
         brick.StopAllMotors();
         disp('Kill switch pressed.');
         break;
     end
     
-    % Sensor Inputs
-    distance = brick.UltrasonicDist(4);  % Ultrasonic sensor (on left)
-    color = brick.ColorCode(3);         % Color sensor
-    press = brick.TouchPressed(2);      % Touch sensor (front)
-    currentAngle = brick.GyroAngle('1'); % Gyro sensor for angle
+    % sensor setups
+    distance = brick.UltrasonicDist(4);  % Ultrasonic
+    color = brick.ColorCode(3);         % Color
+    press = brick.TouchPressed(2);      % Touch 
+    currentAngle = brick.GyroAngle('1'); % Gyro
 
-    % Autonomous Mode
+    % drive autonomous
     if ~manualMode
-        % Straight-Line Correction with Gyro Sensor
-        targetAngle = 0; % Target angle for straight-line movement
+        % gyro-sensor correcyion
+        targetAngle = 0; % Target angle for driving in a straight line
         if currentAngle > targetAngle
-            % Adjust motors to correct veering to the right
-            brick.MoveMotor('A', -(DRIVE_SPEED - 10)); % Negative for forward
+            % fix motors when vering right
+            brick.MoveMotor('A', -(DRIVE_SPEED - 10));
             brick.MoveMotor('D', -(DRIVE_SPEED + 10));
         elseif currentAngle < targetAngle
-            % Adjust motors to correct veering to the left
+            % fix motors when veering left
             brick.MoveMotor('A', -(DRIVE_SPEED + 10));
             brick.MoveMotor('D', -(DRIVE_SPEED - 10));
         else
-            % Drive straight
+            % straight driving
             brick.MoveMotor('A', -DRIVE_SPEED);
             brick.MoveMotor('D', -DRIVE_SPEED);
         end
 
-        % Stop at Stop Signs (Red)
+        % Stop (Red)
         if color == 5
             brick.StopAllMotors();
             pause(5);
-        % Pickup Zone (Blue)
+        % Pickup (Blue)
         elseif color == 2 && ~pickupDone
             brick.StopAllMotors();
             manualMode = true;
-            disp('Pickup zone reached. Switching to manual mode.');
-        % Dropoff Zone (Green)
+            disp('Pickup zone. Switching to manual mode.');
+        % Dropoff (Green)
         elseif color == 3 && pickupDone && ~dropoffDone
             brick.StopAllMotors();
             manualMode = true;
-            disp('Dropoff zone reached. Switching to manual mode.');
-        % End Zone (Yellow)
+            disp('Dropoff zone. Switching to manual mode.');
+        % End (Yellow)
         elseif color == 4 && dropoffDone
             brick.StopAllMotors();
-            disp('Task completed!');
+            disp('Dropoff done!');
             taskCompleted = true;
-        % Obstacle Detection and Response
+        % turning and avoiding walls 
         elseif press
             brick.StopAllMotors();
             pause(0.5);
             if distance < 25
-                disp('Obstacle detected on the left. Turning right...');
-                % Gyro-Based 90-degree Right Turn
-                targetTurn = currentAngle + 90; % Target angle after 90-degree turn
+                % gyro 90 deg turn right
+                targetTurn = currentAngle + 90; % what the angle should be after the turn right
                 while brick.GyroAngle('1') < targetTurn
-                    brick.MoveMotor('A', TURN_SPEED); % Reverse logic: left motor forward
-                    brick.MoveMotor('D', -TURN_SPEED); % Right motor backward
+                    brick.MoveMotor('A', TURN_SPEED); % left motor forward
+                    brick.MoveMotor('D', -TURN_SPEED); % Right motor back
                 end
                 brick.StopAllMotors();
             else
-                disp('Path clear on the left. Turning left...');
-                % Gyro-Based 90-degree Left Turn
-                targetTurn = currentAngle - 90; % Target angle after 90-degree turn
+                % gyro 90 deg turn left
+                targetTurn = currentAngle - 90; % what the angle should be after the turn left
                 while brick.GyroAngle('1') > targetTurn
-                    brick.MoveMotor('A', -TURN_SPEED); % Reverse logic: left motor backward
-                    brick.MoveMotor('D', TURN_SPEED);  % Right motor forward
+                    brick.MoveMotor('A', -TURN_SPEED); % Left motor back
+                    brick.MoveMotor('D', TURN_SPEED);  % right mtor forward
                 end
                 brick.StopAllMotors();
             end
         end
     end
 
-    % Manual Mode (reversed directions for control)
+    % Manual ctrl
     if manualMode
         switch key
-            case 'uparrow'  % Forward (negative due to reversed orientation)
+            case 'uparrow'  % Forward
                 brick.MoveMotor('A', -DRIVE_SPEED);
                 brick.MoveMotor('D', -DRIVE_SPEED);
-            case 'downarrow' % Backward (positive due to reversed orientation)
+            case 'downarrow' % Backward
                 brick.MoveMotor('A', DRIVE_SPEED);
                 brick.MoveMotor('D', DRIVE_SPEED);
-            case 'leftarrow' % Turn left
+            case 'leftarrow' % left
                 brick.MoveMotor('A', 0);
                 brick.MoveMotor('D', -DRIVE_SPEED);
-            case 'rightarrow' % Turn right
+            case 'rightarrow' % right
                 brick.MoveMotor('A', -DRIVE_SPEED);
                 brick.MoveMotor('D', 0);
             case 'a'  % Open Arm
@@ -102,8 +99,7 @@ while ~taskCompleted
                 brick.MoveMotor('B', -50);
                 pause(1);
                 brick.StopMotor('B');
-            case 'space'
-                disp('Switching to autonomous mode...');
+            case 'space' %switch to Autonomous
                 manualMode = false;
                 if color == 2
                     pickupDone = true;
