@@ -1,8 +1,9 @@
-% Gyro Sensor
-brick.GyroReset('1');
 
 global key
 InitKeyboard();
+
+% Gyro Sensor
+brick.GyroReset('1');
 
 while ~taskCompleted
     % Check for key presses
