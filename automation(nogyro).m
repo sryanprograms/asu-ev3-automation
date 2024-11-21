@@ -1,23 +1,22 @@
-% brick = ConnectBrick('VIRUS'); run this in the command window before pressing run
-
+%brick = ConnectBrick('TacoBrick');  % Connect to the brick
 global key;
 InitKeyboard();
 
 % Set color sensor
 brick.SetColorMode(3, 2);
 
-beginMoving = 1;
+beginMoving = false;  % Start in a stationary state
 manualMode = false;  
 pickupDone = false;
 dropoffDone = false;
 
-while beginMoving
+while true
     % Sensor ports
     distance = brick.UltrasonicDist(4);
     color = brick.ColorCode(3);
     press = brick.TouchPressed(2);
 
-    % Check for 'q' quick button or manual mode inputs
+    % Check for key inputs
     switch key
         case 'q'  % Quick quit button
             disp('Quick quit button pressed. Exiting...');
@@ -27,11 +26,14 @@ while beginMoving
         case 'space'  % Switch to autonomous mode
             disp('Switching to autonomous mode.');
             manualMode = false;
+            beginMoving = true;
+
+        case 'uparrow'  % Start autonomous movement
+            disp('Up arrow pressed. Starting autonomous mode.');
+            manualMode = false;
+            beginMoving = true;
 
         % Manual control
-        case 'uparrow'
-            brick.MoveMotor('A', 50);
-            brick.MoveMotor('D', 50);
         case 'downarrow'
             brick.MoveMotor('A', -50);
             brick.MoveMotor('D', -50);
@@ -52,7 +54,7 @@ while beginMoving
     end
 
     % Autonomous mode
-    if ~manualMode
+    if beginMoving && ~manualMode
         % Forward motion
         brick.MoveMotor('A', -50);
         brick.MoveMotor('D', -50);
