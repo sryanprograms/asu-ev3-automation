@@ -53,6 +53,12 @@ while true
             brick.MoveMotor('B', -25);
             pause(2);
             brick.StopMotor('B');
+        otherwise
+            % Stop all motors when no key is pressed
+            if manualMode
+                brick.StopMotor('A');
+                brick.StopMotor('D');
+            end
     end
 
     % Autonomous mode
