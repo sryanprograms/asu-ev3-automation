@@ -28,28 +28,30 @@ while true
             manualMode = false;
             beginMoving = true;
 
-        case 'uparrow'  % Start autonomous movement
-            disp('Up arrow pressed. Starting autonomous mode.');
-            manualMode = false;
-            beginMoving = true;
-
         % Manual control
-        case 'downarrow'
+        case 'uparrow'  % Start autonomous movement
+            pause(2);
             brick.MoveMotor('A', -50);
             brick.MoveMotor('D', -50);
-        case 'leftarrow'
-            brick.MoveMotor('A', 0);
-            brick.MoveMotor('D', 50);
-        case 'rightarrow'
+        case 'downarrow'
+            pause(2);
             brick.MoveMotor('A', 50);
+            brick.MoveMotor('D', 50);
+        case 'leftarrow'
+            pause(2);
+            brick.MoveMotor('A', 0);
+            brick.MoveMotor('D', -50);
+        case 'rightarrow'
+            pause(2);
+            brick.MoveMotor('A', -50);
             brick.MoveMotor('D', 0);
         case 'a'  % Open mechanical arm
             brick.MoveMotor('B', 50);
-            pause(1);
+            pause(2);
             brick.StopMotor('B');
         case 'b'  % Close mechanical arm
             brick.MoveMotor('B', -50);
-            pause(1);
+            pause(2);
             brick.StopMotor('B');
     end
 
