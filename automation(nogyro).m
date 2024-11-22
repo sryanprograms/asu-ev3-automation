@@ -31,26 +31,26 @@ while true
         % Manual control
         case 'uparrow'  % Start autonomous movement
             pause(2);
-            brick.MoveMotor('A', -50);
-            brick.MoveMotor('D', -50);
+            brick.MoveMotor('A', -25);
+            brick.MoveMotor('D', -25);
         case 'downarrow'
             pause(2);
-            brick.MoveMotor('A', 50);
-            brick.MoveMotor('D', 50);
+            brick.MoveMotor('A', 25);
+            brick.MoveMotor('D', 25);
         case 'leftarrow'
             pause(2);
             brick.MoveMotor('A', 0);
-            brick.MoveMotor('D', -50);
+            brick.MoveMotor('D', -25);
         case 'rightarrow'
             pause(2);
-            brick.MoveMotor('A', -50);
+            brick.MoveMotor('A', -25);
             brick.MoveMotor('D', 0);
         case 'a'  % Open mechanical arm
-            brick.MoveMotor('B', 50);
+            brick.MoveMotor('B', 25);
             pause(2);
             brick.StopMotor('B');
         case 'b'  % Close mechanical arm
-            brick.MoveMotor('B', -50);
+            brick.MoveMotor('B', -25);
             pause(2);
             brick.StopMotor('B');
     end
@@ -58,8 +58,8 @@ while true
     % Autonomous mode
     if beginMoving && ~manualMode
         % Forward motion
-        brick.MoveMotor('A', -50);
-        brick.MoveMotor('D', -50);
+        brick.MoveMotor('A', -25);
+        brick.MoveMotor('D', -25);
 
         % Stop sign
         if color == 5
@@ -82,14 +82,14 @@ while true
         elseif distance <= 25 && press == 1
             % Wall on the left, turn right
             pause(0.5);
-            brick.MoveMotorAngleRel('A', -50, 180, 'D', 50, 180);  
+            brick.MoveMotorAngleRel('A', -25, 180, 'D', 25, 180);  
             brick.WaitForMotor('A');
             brick.WaitForMotor('D');
 
         elseif distance > 25 && press == 1
             % Wall on the right, turn left
             pause(0.5);
-            brick.MoveMotorAngleRel('A', 50, 180, 'D', -50, 180); 
+            brick.MoveMotorAngleRel('A', 25, 180, 'D', -25, 180); 
             brick.WaitForMotor('A');
             brick.WaitForMotor('D');
         end
