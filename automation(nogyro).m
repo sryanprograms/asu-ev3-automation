@@ -11,6 +11,7 @@ pickupDone = false;
 dropoffDone = false;
 
 while true
+    pause(0.5);
     % Sensor ports
     distance = brick.UltrasonicDist(4);
     color = brick.ColorCode(3);
@@ -85,20 +86,27 @@ while true
             manualMode = true;
 
         % Wall-following logic
-        elseif distance <= 25 && press == 1
-            % Wall on the left, turn right
-            pause(0.5);
-            brick.MoveMotorAngleRel('A', 0, 180, 'Brake');
-            brick.MoveMotorAngleRel('D', -25, 180, 'Brake');
-            brick.WaitForMotor('A'); 
-            brick.WaitForMotor('D');
-
-        elseif distance > 25 && press == 1
-            pause(0.5); % Small pause for smoother control
-            brick.MoveMotorAngleRel('A', -25, 180, 'Brake');
-            brick.MoveMotorAngleRel('D', 0, 180, 'Brake');
+        if press == 1
+            if distance <= 25
+                % Obstacle detected, turn left (pivot right motor backward)
+                disp('Obstacle detected on the left. Turning left...');
+                brick.MoveMotorAngleRel('A', -25, 360, 'Brake'); % Left motor moves backward
+                brick.MoveMotorAngleRel('D', 25, 360, 'Brake');  % Right motor moves forward
+            else
+                % No obstacle, turn right (pivot left motor backward)
+                disp('No obstacle detected. Turning right...');
+                brick.MoveMotorAngleRel('A', 25, 360, 'Brake');  % Left motor moves forward
+                brick.MoveMotorAngleRel('D', -25, 360, 'Brake'); % Right motor moves backward
+            end
+            
+            % Wait for both motors to complete their motions
             brick.WaitForMotor('A');
             brick.WaitForMotor('D');
+            
+            % Resume moving straight after turn
+            disp('Resuming straight motion...');
+            brick.MoveMotor('A', -25); % Move both motors backward
+            brick.MoveMotor('D', -25);
         end
     end
 
