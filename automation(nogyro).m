@@ -1,4 +1,5 @@
-%brick = ConnectBrick('TacoBrick');  % Connect to the brick
+% Connect to the brick
+% brick = ConnectBrick('TacoBrick');  
 global key;
 InitKeyboard();
 
@@ -60,7 +61,7 @@ while true
                 brick.StopMotor('A');
                 brick.StopMotor('D');
             end
-    end
+    end % End of switch statement
 
     % Autonomous mode
     if beginMoving && ~manualMode
@@ -84,6 +85,7 @@ while true
             brick.StopAllMotors();
             disp('Drop-off zone reached. Switching to manual mode.');
             manualMode = true;
+        end % End of stop/pickup/drop-off checks
 
         % Wall-following logic
         if press == 1
@@ -97,7 +99,7 @@ while true
                 disp('No obstacle detected. Turning right...');
                 brick.MoveMotorAngleRel('A', 25, 360, 'Brake');  % Left motor moves forward
                 brick.MoveMotorAngleRel('D', -25, 360, 'Brake'); % Right motor moves backward
-            end
+            end % End of wall-following checks
             
             % Wait for both motors to complete their motions
             brick.WaitForMotor('A');
@@ -107,8 +109,8 @@ while true
             disp('Resuming straight motion...');
             brick.MoveMotor('A', -25); % Move both motors backward
             brick.MoveMotor('D', -25);
-        end
-    end
+        end % End of press logic
+    end % End of autonomous mode check
 
     % Check if the task is complete
     if dropoffDone && color == 4
@@ -116,6 +118,6 @@ while true
         disp('Task complete. Exiting...');
         break;
     end
-end
+end % End of while loop
 
-CloseKeyboard();
+CloseKeyboard(); % Close the keyboard interface
