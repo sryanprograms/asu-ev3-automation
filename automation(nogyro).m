@@ -65,7 +65,7 @@ while true
 
     % Autonomous mode
     if beginMoving && ~manualMode
-        % First: Check for stop sign, pickup zone, or drop-off zone
+        % Check for stop sign, pickup zone, or drop-off zone
         if color == 5
             % Stop sign
             disp('Stop sign detected. Halting for 5 seconds.');
@@ -83,30 +83,31 @@ while true
             disp('Drop-off zone detected. Switching to manual mode.');
             brick.StopAllMotors();
             manualMode = true;
+        end % End of color sensor checks
 
-        else
-            % No color condition met: Continue to wall-following logic or forward motion
-            if press == 1
-                if distance <= 25
-                    % Obstacle detected, turn left
-                    disp('Obstacle detected on the left. Turning left...');
-                    brick.MoveMotorAngleRel('A', 25, 360, 'Brake'); 
-                    brick.MoveMotorAngleRel('D', -25, 360, 'Brake'); 
-                else
-                    % No obstacle, turn right
-                    disp('No obstacle detected on the right. Turning right...');
-                    brick.MoveMotorAngleRel('A', -25, 360, 'Brake'); 
-                    brick.MoveMotorAngleRel('D', 25, 360, 'Brake'); 
-                end
-
-                % Wait for both motors to complete their motions
-                brick.WaitForMotor('A');
-                brick.WaitForMotor('D');
+        % Wall-following logic (checks and turns if press is 1)
+        if press == 1
+            if distance <= 25
+                % Obstacle detected, turn left
+                disp('Obstacle detected on the left. Turning left...');
+                brick.MoveMotorAngleRel('A', 25, 360, 'Brake'); 
+                brick.MoveMotorAngleRel('D', -25, 360, 'Brake'); 
             else
-                % Move straight if no pressing or color conditions are met
-                brick.MoveMotor('A', -25); % Move both motors backward
-                brick.MoveMotor('D', -25);
+                % No obstacle, turn right
+                disp('No obstacle detected on the right. Turning right...');
+                brick.MoveMotorAngleRel('A', -25, 360, 'Brake'); 
+                brick.MoveMotorAngleRel('D', 25, 360, 'Brake'); 
             end
+
+            % Wait for both motors to complete their motions
+            brick.WaitForMotor('A');
+            brick.WaitForMotor('D');
+        end % End of press logic
+
+        % Move straight if no pressing or color conditions are met
+        if press ~= 1 && color ~= 2 && color ~= 3 && color ~= 5
+            brick.MoveMotor('A', -25); % Move both motors backward
+            brick.MoveMotor('D', -25);
         end
     end % End of autonomous mode check
 
