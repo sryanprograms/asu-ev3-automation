@@ -88,14 +88,15 @@ while true
         elseif distance <= 25 && press == 1
             % Wall on the left, turn right
             pause(0.5);
-            brick.MoveMotorAngleRel('A', -25, 180, 'D', 25, 180);  
-            brick.WaitForMotor('A');
+            brick.MoveMotorAngleRel('A', 0, 180, 'Brake');
+            brick.MoveMotorAngleRel('D', -25, 180, 'Brake');
+            brick.WaitForMotor('A'); 
             brick.WaitForMotor('D');
 
         elseif distance > 25 && press == 1
-            % Wall on the right, turn left
-            pause(0.5);
-            brick.MoveMotorAngleRel('A', 25, 180, 'D', -25, 180); 
+            pause(0.5); % Small pause for smoother control
+            brick.MoveMotorAngleRel('A', -25, 180, 'Brake');
+            brick.MoveMotorAngleRel('D', 0, 180, 'Brake');
             brick.WaitForMotor('A');
             brick.WaitForMotor('D');
         end
